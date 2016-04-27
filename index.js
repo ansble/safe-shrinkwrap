@@ -6,29 +6,38 @@ var path = require('path')
   , isProblematic = function (name) {
     var badDeps = ['fsevents', 'canvas', 'dbus'];
 
-    return badDeps.indexOf === -1;
+    return badDeps.indexOf(name) !== -1;
   }
 
   , cleanDependencies = function (depObject) {
     return Object.keys(depObject).reduce(function (result, key) {
-      if ( depObject[key].dependencies) {
-        result[key] = cleanDependencies(depObject[key].dependencies);
-      } else {
-        if (!isProblematic(key)) {
+      if (!isProblematic(key)) {
+        if ( depObject[key].dependencies) {
           result[key] = depObject[key];
+          result[key].dependencies = cleanDependencies(depObject[key].dependencies);
         } else {
-          console.log('Bad DEP!', key);
+          result[key] = depObject[key];
         }
+      } else {
+        console.log('Bad DEP!', key);
       }
 
       return result;
     }, {});
   };
 
-cp.exec('npm shrinkwrap --dev', function (err, stdout, stderr) {
-  var shrinkwrapped = require(path.join(process.cwd(), './npm-shrinkwrap.json'))
-    , clean = cleanDependencies(shrinkwrapped.dependencies);
+cp.exec('npm prune && npm shrinkwrap --dev', function (err, stdout, stderr) {
+  if (err) {
+    console.log(err);
+    return;
+  }
 
-  fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(clean));
+  var shrinkwrapped = require(path.join(process.cwd(), './npm-shrinkwrap.json'))
+    , clean = cleanDependencies(shrinkwrapped.dependencies)
+    , finalObj = JSON.parse(JSON.stringify(shrinkwrapped));
+
+  finalObj.dependencies = clean;
+
+  fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj));
   fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped));
 });
