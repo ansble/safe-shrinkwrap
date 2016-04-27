@@ -1,0 +1,24 @@
+{
+  "name": "safe-shrinkwrap",
+  "version": "1.0.0",
+  "description": "an OS independent shrinkwrap generator with dev dependencies backed in",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/designfrontier/safe-shrinkwrap.git"
+  },
+  "author": "Daniel Sellers",
+  "license": "MIT",
+  "preferGlobal": true,
+  "bin": {
+    "safe-shrinkwrap": "./index.js",
+    "ssw": "./index.js"
+  },
+  "bugs": {
+    "url": "https://github.com/designfrontier/safe-shrinkwrap/issues"
+  },
+  "homepage": "https://github.com/designfrontier/safe-shrinkwrap"
+}
