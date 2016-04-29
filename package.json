@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/designfrontier/safe-shrinkwrap/issues"
   },
-  "homepage": "https://github.com/designfrontier/safe-shrinkwrap"
+  "homepage": "https://github.com/designfrontier/safe-shrinkwrap",
+  "dependencies": {
+    "glob": "^7.0.3"
+  }
 }
