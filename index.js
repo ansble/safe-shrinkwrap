@@ -4,6 +4,16 @@ var path = require('path')
   , cp = require('child_process')
   , fs = require('fs')
   , glob = require('glob')
+  , ora = require('ora')
+  , spinner = ora({
+    text: 'The hamsters are working...'
+    , spinner: 'star'
+  })
+  , installArg = process.argv.pop()
+  , shouldInstall = installArg === '--install' || installArg === '-i'
+  , command = shouldInstall ?
+      'npm cache clear && npm install && npm prune && npm dedupe && npm shrinkwrap --dev' :
+      'npm prune && npm dedupe && npm shrinkwrap --dev'
 
   , isProblematic = function (badDeps) {
       return function (name) {
@@ -26,7 +36,13 @@ var path = require('path')
     }, {});
   };
 
-cp.exec('npm prune && npm shrinkwrap --dev', function (err, stdout, stderr) {
+if (shouldInstall) {
+  console.log('Clearing NPM cache and Proceeding to reinstall before we shrinkwrap');
+}
+
+spinner.start();
+
+cp.exec(command, function (err, stdout, stderr) {
   if (err) {
     console.log(err);
     return;
@@ -53,5 +69,8 @@ cp.exec('npm prune && npm shrinkwrap --dev', function (err, stdout, stderr) {
 
     fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj));
     fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped));
+    spinner.stop();
+
+    console.log("They're done! So is your shrinkwrap file.");
   });
 });
