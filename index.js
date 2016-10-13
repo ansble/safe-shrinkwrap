@@ -10,7 +10,7 @@ var path = require('path')
     , spinner: 'star'
   })
   , installArg = process.argv.pop()
-  , shouldInstall = installArg === '--install' || installArg === '-i'
+  , shouldInstall = !(installArg === '--no-install' || installArg === '-ni')
   , command = shouldInstall ?
       'npm cache clear && npm install && npm prune && npm dedupe && npm shrinkwrap --dev' :
       'npm prune && npm dedupe && npm shrinkwrap --dev'
