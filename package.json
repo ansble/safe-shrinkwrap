@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/designfrontier/safe-shrinkwrap.git"
+    "url": "https://github.com/ansble/safe-shrinkwrap.git"
   },
   "author": "Daniel Sellers",
   "license": "MIT",
@@ -18,9 +18,9 @@
     "ssw": "./index.js"
   },
   "bugs": {
-    "url": "https://github.com/designfrontier/safe-shrinkwrap/issues"
+    "url": "https://github.com/ansble/safe-shrinkwrap/issues"
   },
-  "homepage": "https://github.com/designfrontier/safe-shrinkwrap",
+  "homepage": "https://github.com/ansble/safe-shrinkwrap",
   "dependencies": {
     "glob": "^7.0.3",
     "ora": "^0.2.1"
