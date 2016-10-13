@@ -5,12 +5,13 @@ var path = require('path')
   , fs = require('fs')
   , glob = require('glob')
   , ora = require('ora')
+  , pkg = require('./package')
   , spinner = ora({
     text: 'The hamsters are working...'
     , spinner: 'star'
   })
-  , installArg = process.argv.pop()
-  , shouldInstall = !(installArg === '--no-install' || installArg === '-ni')
+
+  , shouldInstall = process.argv.indexOf('--no-install') === -1 && process.argv.indexOf('-ni') === -1
   , command = shouldInstall ?
       'npm cache clear && npm install && npm prune && npm dedupe && npm shrinkwrap --dev' :
       'npm prune && npm dedupe && npm shrinkwrap --dev'
@@ -35,6 +36,20 @@ var path = require('path')
       return result;
     }, {});
   };
+
+if (process.argv.indexOf('-v') >= 0 || process.argv.indexOf('--version') >= 0) {
+  console.log(pkg.version);
+  process.exit(0);
+}
+
+if (process.argv.indexOf('-h') >= 0 || process.argv.indexOf('--help') >= 0) {
+  console.log(`safe-shrinkwrap version: ${pkg.version}`);
+  console.log('');
+  console.log(`    -ni, --no-install : doesn't install`)
+  console.log(`    -v, --version : outputs just the version`)
+  console.log(`    -h, --help : outputs this help information`)
+  process.exit(0);
+}
 
 if (shouldInstall) {
   console.log('Clearing NPM cache and Proceeding to reinstall before we shrinkwrap');
