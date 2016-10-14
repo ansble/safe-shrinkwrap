@@ -26,7 +26,7 @@ Be aware that it blows away your `node_modules` directory and reinstalls it. So 
 IF... you really don't want to have it wipe and reinstall then you need to pass `--no-install` or `-ni`. This often leads to errors though. So be warned.
 
 ## License
-See [License.md](License.md) for the license
+See [LICENSE.md](LICENSE.md) for the license
 
 ## Code of Conduct
 See [CODE-OF-CONDUCT.md](CODE-OF-CONDUCT.md) for the code of conduct.
