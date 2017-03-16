@@ -77,7 +77,7 @@ cp.exec(command, function (err, stdout, stderr) {
 
           return accum;
         }, [])
-      , clean = cleanDependencies(shrinkwrapped.dependencies, isProblematic(badDeps))
+      , clean = cleanDependencies(shrinkwrapped.dependencies || {}, isProblematic(badDeps))
       , finalObj = JSON.parse(JSON.stringify(shrinkwrapped));
 
     finalObj.dependencies = clean;
