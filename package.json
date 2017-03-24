@@ -23,6 +23,6 @@
   "homepage": "https://github.com/ansble/safe-shrinkwrap",
   "dependencies": {
     "glob": "^7.0.3",
-    "ora": "^0.2.1"
+    "ora": "^1.2.0"
   }
 }
