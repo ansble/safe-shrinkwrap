@@ -13,7 +13,7 @@ var path = require('path')
 
   , shouldInstall = process.argv.indexOf('--no-install') === -1 && process.argv.indexOf('-ni') === -1
   , command = shouldInstall ?
-      'npm cache clear && npm install && npm prune && npm dedupe && npm shrinkwrap --dev' :
+      'npm cache clear && npm install && npm prune && npm shrinkwrap --dev' :
       'npm prune && npm dedupe && npm shrinkwrap --dev'
 
   , isProblematic = function (badDeps) {
