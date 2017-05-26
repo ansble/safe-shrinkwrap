@@ -60,7 +60,7 @@ if (shouldInstall) {
 }
 
 spinner.start();
-console.log(command);
+
 cp.exec(command, function (err, stdout, stderr) {
   if (err) {
     console.log(err);
