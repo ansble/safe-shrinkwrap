@@ -12,10 +12,8 @@ var path = require('path')
   })
 
   , shouldInstall = process.argv.indexOf('--no-install') === -1 && process.argv.indexOf('-ni') === -1
-  , command = shouldInstall ?
-      'npm cache clear && npm install && npm prune && npm shrinkwrap --dev' :
-      'npm prune && npm dedupe && npm shrinkwrap --dev'
-
+  , shouldDedupe = !(process.argv.indexOf('--no-dedupe') === -1 && process.argv.indexOf('-ndd') === -1)
+  , command = shouldInstall ? 'npm cache clear && npm install && ' : ''
   , isProblematic = function (badDeps) {
       return function (name) {
         return badDeps.indexOf(name) !== -1;
@@ -51,12 +49,18 @@ if (process.argv.indexOf('-h') >= 0 || process.argv.indexOf('--help') >= 0) {
   process.exit(0);
 }
 
+if (shouldDedupe) {
+  command = command + 'npm prune && npm dedupe && npm shrinkwrap --dev';
+} else {
+  command = command + 'npm prune && npm shrinkwrap --dev';
+}
+
 if (shouldInstall) {
   console.log('Clearing NPM cache and Proceeding to reinstall before we shrinkwrap');
 }
 
 spinner.start();
-
+console.log(command);
 cp.exec(command, function (err, stdout, stderr) {
   if (err) {
     console.log(err);
