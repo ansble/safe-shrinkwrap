@@ -12,7 +12,7 @@ var path = require('path')
   })
 
   , shouldInstall = process.argv.indexOf('--no-install') === -1 && process.argv.indexOf('-ni') === -1
-  , shouldDedupe = !(process.argv.indexOf('--no-dedupe') === -1 && process.argv.indexOf('-ndd') === -1)
+  , shouldDedupe = process.argv.indexOf('--no-dedupe') === -1 && process.argv.indexOf('-ndd') === -1
   , command = shouldInstall ? 'npm cache clear && npm install && ' : ''
   , isProblematic = function (badDeps) {
       return function (name) {
