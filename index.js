@@ -44,6 +44,7 @@ if (process.argv.indexOf('-h') >= 0 || process.argv.indexOf('--help') >= 0) {
   console.log(`safe-shrinkwrap version: ${pkg.version}`);
   console.log('');
   console.log(`    -ni, --no-install : doesn't install`)
+  console.log(`    -ndd, --no-dedupe : don't run npm dedupe`)
   console.log(`    -v, --version : outputs just the version`)
   console.log(`    -h, --help : outputs this help information`)
   process.exit(0);
@@ -86,8 +87,18 @@ cp.exec(command, function (err, stdout, stderr) {
 
     finalObj.dependencies = clean;
 
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj));
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped));
+    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+    
     spinner.stop();
 
     console.log("They're done! So is your shrinkwrap file.");

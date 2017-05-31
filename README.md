@@ -22,10 +22,17 @@ Be aware that it removes your `node_modules` directory and reinstalls your node 
     -ni, --no-install : doesn't install
     -v, --version : outputs just the version
     -h, --help : outputs this help information
+    -ndd, --no-dedupe : keeps it from running npm dedupe as part of the process
 ```
 
 ## No install version
 If you really don't want to have this program wipe and reinstall then you can to pass `--no-install` or `-ni`. This often lead to errors though. So be warned of this.
+
+## No dedpue version
+If you run into problems then you may need to run the `--no-dedupe` version.
+This is likely to happen if you are using chokidar or something that uses it...
+which is a lot of things these days. It prevents `safe-shrinkwrap` from running
+`npm dedupe` which tries to flatten out the dependency tree.
 
 ## License
 See [LICENSE.md](LICENSE.md) for the license

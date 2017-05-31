@@ -1,6 +1,6 @@
 {
   "name": "safe-shrinkwrap",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "an OS independent shrinkwrap generator with dev dependencies baked in",
   "main": "index.js",
   "scripts": {
