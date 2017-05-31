@@ -20,9 +20,11 @@ Be aware that it removes your `node_modules` directory and reinstalls your node 
 
 ```sh
     -ni, --no-install : doesn't install
+    -ndd, --no-dedupe : keeps it from running npm dedupe as part of the process
+    -nd, --no-dev : don't include the dev dependencies in the shrinkwrap file
+    -rs, --remove-shrinkwrap : delete the npm-shrinkwrap.json file first
     -v, --version : outputs just the version
     -h, --help : outputs this help information
-    -ndd, --no-dedupe : keeps it from running npm dedupe as part of the process
 ```
 
 ## No install version
