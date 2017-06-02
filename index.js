@@ -9,7 +9,7 @@ var path = require('path')
   , commandModule = require('./modules/command')
   , pkg = require('./package')
   , spinner = ora({
-    text: 'The hamsters are working...'
+    text: 'The hamsters are working... ' // Trailing space to separate any warnings/errors
     , spinner: 'star'
   })
 
@@ -93,4 +93,4 @@ cp.exec(command, function (err, stdout, stderr) {
     spinner.fail("The hamsters have failed.");
     process.exitCode = err.code || 1;
   });
-});
+}).stderr.pipe(process.stderr); // Pipe child process stderr, so user can see any warnings
