@@ -5,37 +5,21 @@ var path = require('path')
   , fs = require('fs')
   , glob = require('glob')
   , ora = require('ora')
+  , commandModule = require('./modules/command')
   , pkg = require('./package')
   , spinner = ora({
     text: 'The hamsters are working...'
     , spinner: 'star'
   })
 
-  , shouldInstall = process.argv.indexOf('--no-install') === -1 && process.argv.indexOf('-ni') === -1
-  , command = shouldInstall ?
-      'npm cache clear && npm install && npm prune && npm dedupe && npm shrinkwrap --dev' :
-      'npm prune && npm dedupe && npm shrinkwrap --dev'
-
+  , command = commandModule.build(process.argv)
   , isProblematic = function (badDeps) {
       return function (name) {
         return badDeps.indexOf(name) !== -1;
       };
   }
 
-  , cleanDependencies = function (depObject, testFunction) {
-    return Object.keys(depObject).reduce(function (result, key) {
-      if (!testFunction(key)) {
-        if ( depObject[key].dependencies) {
-          result[key] = depObject[key];
-          result[key].dependencies = cleanDependencies(depObject[key].dependencies, testFunction);
-        } else {
-          result[key] = depObject[key];
-        }
-      }
-
-      return result;
-    }, {});
-  };
+  , cleanDependencies = require('./modules/cleanDependencies');
 
 if (process.argv.indexOf('-v') >= 0 || process.argv.indexOf('--version') >= 0) {
   console.log(pkg.version);
@@ -46,16 +30,28 @@ if (process.argv.indexOf('-h') >= 0 || process.argv.indexOf('--help') >= 0) {
   console.log(`safe-shrinkwrap version: ${pkg.version}`);
   console.log('');
   console.log(`    -ni, --no-install : doesn't install`)
+  console.log(`    -ndd, --no-dedupe : don't run npm dedupe`)
+  console.log(`    -nd, --no-dev : don't include dev dependencies`)
+  console.log(`    -rs, --remove-shrinkwrap : delete the shrinkwrap file first`)
   console.log(`    -v, --version : outputs just the version`)
   console.log(`    -h, --help : outputs this help information`)
   process.exit(0);
 }
 
-if (shouldInstall) {
+if (commandModule.shouldInstall(process.argv)) {
   console.log('Clearing NPM cache and Proceeding to reinstall before we shrinkwrap');
 }
 
 spinner.start();
+
+if (commandModule.shouldRemoveShrinkwrap(process.argv)) {
+  try {
+    if (fs.statSync('./npm-shrinkwrap.json').isFile()) {
+      fs.unlinkSync('./npm-shrinkwrap.json')
+    }
+  } catch (e) {
+  }
+}
 
 cp.exec(command, function (err, stdout, stderr) {
   if (err) {
@@ -82,8 +78,18 @@ cp.exec(command, function (err, stdout, stderr) {
 
     finalObj.dependencies = clean;
 
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj));
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped));
+    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
+    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped), (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+
     spinner.stop();
 
     console.log("They're done! So is your shrinkwrap file.");
