@@ -1,5 +1,7 @@
 # Safe Shrinkwrap
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ansble/safe-shrinkwrap.svg)](https://greenkeeper.io/)
+
 Safe shrinkwrap allows you to clean OS specific dependencies from NPM's shrinkwrap JSON file. This makes it a lot easier to create a cross platform shrinkwrap that doesn't break the world even if the maintainer of the systems doesn't.
 
 ## Installation
