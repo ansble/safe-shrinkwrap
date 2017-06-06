@@ -2,13 +2,14 @@
 'use strict';
 var path = require('path')
   , cp = require('child_process')
-  , fs = require('fs')
-  , glob = require('glob')
+  , Promise = require('bluebird')
+  , fs = Promise.promisifyAll(require('fs'))
+  , glob = Promise.promisify(require('glob'))
   , ora = require('ora')
   , commandModule = require('./modules/command')
   , pkg = require('./package')
   , spinner = ora({
-    text: 'The hamsters are working...'
+    text: 'The hamsters are working... ' // Trailing space to separate any warnings/errors
     , spinner: 'star'
   })
 
@@ -39,7 +40,7 @@ if (process.argv.indexOf('-h') >= 0 || process.argv.indexOf('--help') >= 0) {
 }
 
 if (commandModule.shouldInstall(process.argv)) {
-  console.log('Clearing NPM cache and Proceeding to reinstall before we shrinkwrap');
+  console.log('Clearing NPM cache and proceeding to reinstall before we shrinkwrap');
 }
 
 spinner.start();
@@ -54,12 +55,13 @@ if (commandModule.shouldRemoveShrinkwrap(process.argv)) {
 }
 
 cp.exec(command, function (err, stdout, stderr) {
-  if (err) {
-    console.log(err);
-    return;
-  }
-
-  glob('./node_modules/**/package.json', function (err, files) {
+  Promise.try(() => {
+    if (err) throw err;
+  })
+  .then(() => {
+    return glob('./node_modules/**/package.json');
+  })
+  .then((files) => {
     var shrinkwrapped = require(path.join(process.cwd(), './npm-shrinkwrap.json'))
       , badDeps = files.reduce(function (accum, file) {
           try {
@@ -78,20 +80,17 @@ cp.exec(command, function (err, stdout, stderr) {
 
     finalObj.dependencies = clean;
 
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj), (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-
-    fs.writeFile(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped), (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-
-    spinner.stop();
-
-    console.log("They're done! So is your shrinkwrap file.");
+    return Promise.all([
+      fs.writeFileAsync(path.join(process.cwd(), './npm-shrinkwrap.json'), JSON.stringify(finalObj)),
+      fs.writeFileAsync(path.join(process.cwd(), './npm-shrinkwrap.unsafe.json'), JSON.stringify(shrinkwrapped))
+    ]);
+  })
+  .then(() => {
+    spinner.succeed("The hamsters are done! So is your shrinkwrap file.");
+  })
+  .catch((err) => {
+    console.error(err);
+    spinner.fail("The hamsters have failed.");
+    process.exitCode = err.code || 1;
   });
-});
+}).stderr.pipe(process.stderr); // Pipe child process stderr, so user can see any warnings
