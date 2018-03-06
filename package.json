@@ -4,7 +4,8 @@
   "description": "an OS independent shrinkwrap generator with dev dependencies baked in",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover _mocha -- *.test.js modules/*.test.js"
+    "test": "istanbul cover _mocha -- *.test.js modules/*.test.js",
+    "release": "npm test && tom"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "istanbul": "^0.4.5",
-    "mocha": "^5.0.0"
+    "mocha": "^5.0.0",
+    "tom-sawyer": "^0.1.4"
   }
 }
