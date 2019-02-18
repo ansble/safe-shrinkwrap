@@ -30,7 +30,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "istanbul": "^0.4.5",
-    "mocha": "^5.0.0",
+    "mocha": "^6.0.0",
     "tom-sawyer": "^0.1.4"
   }
 }
