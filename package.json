@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/ansble/safe-shrinkwrap",
   "dependencies": {
-    "bluebird": "^3.5.0",
+    "bluebird": "^3.5.5",
     "glob": "^7.0.3",
     "ora": "^3.0.0"
   },
