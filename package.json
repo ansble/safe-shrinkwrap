@@ -24,7 +24,7 @@
   "homepage": "https://github.com/ansble/safe-shrinkwrap",
   "dependencies": {
     "bluebird": "^3.5.0",
-    "glob": "^7.0.3",
+    "glob": "^7.1.5",
     "ora": "^3.0.0"
   },
   "devDependencies": {
